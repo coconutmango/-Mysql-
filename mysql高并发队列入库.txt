@@ -1,0 +1,20 @@
+php
+
+  @Createat 2017-11-08
+  @Author coconutmango
+  @Description 文件锁实现高并发下MySQL队列入库
+
+$connect = mysql_connect('DB_HOST','DB_NAME','DB_PASSWORD');
+mysql_query('use test');
+添加写锁文件
+$file = fopen('.filelock.txt','w');
+添加文件锁
+flock($file,LOCK_EX);
+$res = mysql_query('select num from test where id=1');
+$num = $res['num'];
+减库存
+$num = $num-1;
+执行结果，再写入数据库
+mysql_query(update test set num = $num where id=1);
+文件解锁
+flock($file,LOCK_UN);
